@@ -1,3 +1,10 @@
+
+'''
+    Выполнил:   Курнаев Данила
+    Группа:     М7О-406с-19
+    link = https://www.codewars.com//kata/59c8b38423dacc7d95000008
+'''
+
 def isValid(formula):
     flag = None
     f1 = 7 in formula

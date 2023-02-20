@@ -1,3 +1,11 @@
+
+'''
+    Выполнил:   Курнаев Данила
+    Группа:     М7О-406с-19
+    link = https://www.codewars.com//kata/5bb904724c47249b10000131
+'''
+
+
 def points(games):
     points = 0
 
