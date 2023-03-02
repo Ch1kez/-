@@ -2,22 +2,22 @@
 '''
     Выполнил:   Курнаев Данила
     Группа:     М7О-406с-19
-    link = https://www.codewars.com//kata/5a651865fd56cb55760000e0
+    link = https://www.codewars.com/kata/52ecde1244751a799b00018a/train/python
 '''
 
-def array_leaders(numbers):
-    rez = []
-    print(numbers)
-    for el in numbers:
-        sum = 0
 
-        for summand in numbers[numbers.index(el) + 1:]:
-            sum += summand
+def sqrt_approximation(number):
+    if number > 10:
+        nuber_range = number // 2
+    else:
+        nuber_range = number
 
-        if sum < el:
-            rez.append(el)
+    for k in range(1, nuber_range):
+        sq = k * k
+        sq_plus_1 = (k + 1) * (k + 1)
 
-    return rez
+        if sq == number:
+            return k
 
-
-array_leaders([16,17,4,3,5,2])
+        elif sq < number and number < sq_plus_1:
+            return [k, k + 1]

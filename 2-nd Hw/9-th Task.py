@@ -7,16 +7,23 @@
 
 
 def proofread(string):
-    string_cap = ''
+    string_rez = ''
     str_spl_list = string.lower().split('.')
-    print(str_spl_list)
-    for el in string.lower().split('. '):
 
-        print(el.capitalize())
-        if el == '':
-            break
-        elif len(str_spl_list) == 1:
-            string_cap += el.capitalize()
-        else:
-            string_cap += el.capitalize() + '.'
-    return string_cap.replace('ie', 'ei')
+    for el in str_spl_list:
+
+        if len(str_spl_list) == 1:
+            return el.lower().replace('ie', 'ei').capitalize()
+
+        elif el != '':
+
+            if el[0] == ' ':
+                string_rez += el[0] + el[1:].lower().replace('ie', 'ei').capitalize() + '.'
+
+            else:
+                string_rez += el.lower().replace('ie', 'ei').capitalize() + '.'
+
+    if str_spl_list[-1] != '':
+        string_rez = string_rez[:-1]
+
+    return string_rez
