@@ -2,7 +2,7 @@
 '''
     Выполнил:   Курнаев Данила
     Группа:     М7О-406с-19
-    link = https://www.codewars.com/kata/517abf86da9663f1d2000003/train/python
+    link = https://leetcode.com/problems/reverse-string/submissions/914881133/
 '''
 
 
