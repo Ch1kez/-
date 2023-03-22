@@ -1,0 +1,10 @@
+ab
+bc
+cd
+ac
+de
+eg
+gc
+ag
+ac
+be
