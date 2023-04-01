@@ -1,0 +1,731 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "6c921494",
+   "metadata": {},
+   "source": [
+    "# 3.1"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f1c7fba8",
+   "metadata": {},
+   "source": [
+    "## A\n",
+    "### Есть ошибка"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "311a2ac9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "num = input()\n",
+    "a = []\n",
+    "for i in range(int(num)):\n",
+    "    name = input()\n",
+    "    a.append(name)\n",
+    "for el in a:\n",
+    "    if el not in 'абвАБВ':\n",
+    "        v = 'No'\n",
+    "        break\n",
+    "    else:\n",
+    "        v = 'Yes'\n",
+    "print(v)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5a7871df",
+   "metadata": {},
+   "source": [
+    "## B"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "61a35b1f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for el in str(input()):\n",
+    "    print(el)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "39c8e654",
+   "metadata": {},
+   "source": [
+    "## C\n",
+    "### Есть ошибка"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "234303c9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "name = input()\n",
+    "s = input()\n",
+    "a = []\n",
+    "for el in range(int(s)):\n",
+    "    sda = input()\n",
+    "    if len(sda) >= int(name):\n",
+    "        a.append(f'{sda[:int(name)]}...')\n",
+    "    else:\n",
+    "        a.append(f'{sda}')\n",
+    "for el in a:\n",
+    "    print(el)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b3af47e8",
+   "metadata": {},
+   "source": [
+    "## D"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "dc9fa78b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "b = []\n",
+    "a = '0'\n",
+    "while a != '':\n",
+    "    # print(a)\n",
+    "    a = input()\n",
+    "    if a.endswith('@@@'):\n",
+    "        continue\n",
+    "    elif a.startswith('##'):\n",
+    "        b.append(a[2:])\n",
+    "    else:\n",
+    "        b.append(a)\n",
+    "for el in b:\n",
+    "    print(el)\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "839397f0",
+   "metadata": {},
+   "source": [
+    "## E"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7a6703ef",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a = input()\n",
+    "if a == a[::-1]:\n",
+    "    print('YES')\n",
+    "else:\n",
+    "    print('NO')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8f8210d2",
+   "metadata": {},
+   "source": [
+    "## L"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3e4cfbf0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "kashi = ['Манная', 'Гречневая', 'Пшённая', 'Овсяная', 'Рисовая']\n",
+    "\n",
+    "num = int(input())\n",
+    "i = 0\n",
+    "counter = 0\n",
+    "while counter != num:\n",
+    "    print(kashi[i])\n",
+    "    i += 1\n",
+    "    counter += 1\n",
+    "    if i == len(kashi):\n",
+    "        i = 0"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "38fc34bf",
+   "metadata": {},
+   "source": [
+    "## G"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5af0319e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ch = input().split()\n",
+    "print(int(ch[0]) + int(ch[1]))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "12ccd9b9",
+   "metadata": {},
+   "source": [
+    "## J"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c798841d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# ch = input()\n",
+    "data = {}\n",
+    "max_find = 0\n",
+    "max_ch = ''\n",
+    "while True:\n",
+    "    ch = input().lower()\n",
+    "    if ch == 'финиш':\n",
+    "        break\n",
+    "    for el in ch:\n",
+    "        if el == ' ':\n",
+    "            continue\n",
+    "        if el in data:\n",
+    "            data[el] += 1\n",
+    "            if max_find < data[el]:\n",
+    "                max_find = data[el]\n",
+    "                max_ch = el\n",
+    "            elif max_find == data[el]:\n",
+    "                if el < max_ch:\n",
+    "                    max_ch = el\n",
+    "        else:\n",
+    "            data[el] = 1\n",
+    "print(max_ch)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "55c6e109",
+   "metadata": {},
+   "source": [
+    "## K"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1a767e11",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "num = input()\n",
+    "requests = []\n",
+    "page = 0\n",
+    "while page != int(num):\n",
+    "    requests.append(input())\n",
+    "    page += 1\n",
+    "req = input().lower()\n",
+    "for el in requests:\n",
+    "    if el.lower().find(req) != -1:\n",
+    "        print(el)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "39b677b1",
+   "metadata": {},
+   "source": [
+    "## M"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4189cefc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "kol_vo = input()\n",
+    "nums = []\n",
+    "el_id = 0\n",
+    "while el_id != int(kol_vo):\n",
+    "    nums.append(int(input()))\n",
+    "    el_id += 1\n",
+    "step = int(input())\n",
+    "for el in nums:\n",
+    "    print(el ** step)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9a299479",
+   "metadata": {},
+   "source": [
+    "# 3.2"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "61913015",
+   "metadata": {},
+   "source": [
+    "## A"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9e70e64c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "str_ = ''\n",
+    "for el in set(input()):\n",
+    "    # print(el, type(el))\n",
+    "    str_ += el\n",
+    "print(str_)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8ad5cc5e",
+   "metadata": {},
+   "source": [
+    "## B"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fc9450af",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "str_ = ''\n",
+    "s_dif = set(input()).intersection(set(input()))\n",
+    "for el in s_dif:\n",
+    "    # print(el, type(el))\n",
+    "    str_ += el\n",
+    "print(str_)\n",
+    "# print(s_dif)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0e4a740f",
+   "metadata": {},
+   "source": [
+    "## C"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2f03fefa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "e = []\n",
+    "for i in range(int(input())):\n",
+    "    e += input().split()\n",
+    "    # print(e)\n",
+    "e = set(e)\n",
+    "for el in e:\n",
+    "    print(el)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "58fa1efb",
+   "metadata": {},
+   "source": [
+    "## D"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "26019366",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "n = input()\n",
+    "m = input()\n",
+    "k_1 = []\n",
+    "k_2 = []\n",
+    "for i in range(int(n)):\n",
+    "    k_1.append(input())\n",
+    "# print(k_1)\n",
+    "for i in range(int(m)):\n",
+    "    k_2.append(input())\n",
+    "# print(k_2)\n",
+    "s_intersection = set(k_1).intersection(set(k_2))\n",
+    "# print(s_intersection)\n",
+    "if len(s_intersection) == 0:\n",
+    "    print('Таких нет')\n",
+    "else:\n",
+    "    print(len(s_intersection))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "30e08759",
+   "metadata": {},
+   "source": [
+    "## E"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0ca40b51",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "n = input()\n",
+    "m = input()\n",
+    "k_1 = []\n",
+    "k_2 = []\n",
+    "for i in range(int(n)):\n",
+    "    k_1.append(input())\n",
+    "# print(k_1)\n",
+    "for i in range(int(m)):\n",
+    "    k_2.append(input())\n",
+    "# print(k_2)\n",
+    "# if len(k_1) < len(k_2):\n",
+    "#     k_1, k_2 = k_2, k_1\n",
+    "s_intersection = set(k_1).symmetric_difference(set(k_2))\n",
+    "# print(s_intersection)\n",
+    "if len(s_intersection) == 0:\n",
+    "    print('Таких нет')\n",
+    "else:\n",
+    "    print(len(s_intersection))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "169e3c12",
+   "metadata": {},
+   "source": [
+    "## F"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1a70abaf",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "n = input()\n",
+    "m = input()\n",
+    "k_1 = []\n",
+    "k_2 = []\n",
+    "for i in range(int(n)):\n",
+    "    k_1.append(input())\n",
+    "# print(k_1)\n",
+    "for i in range(int(m)):\n",
+    "    k_2.append(input())\n",
+    "# print(k_2)\n",
+    "# if len(k_1) < len(k_2):\n",
+    "#     k_1, k_2 = k_2, k_1\n",
+    "s_intersection = set(k_1).symmetric_difference(set(k_2))\n",
+    "# print(s_intersection)\n",
+    "if len(s_intersection) == 0:\n",
+    "    print('Таких нет')\n",
+    "else:\n",
+    "    print(len(s_intersection))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2c78f774",
+   "metadata": {},
+   "source": [
+    "## G"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2ac14035",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "morze = {\n",
+    "        'A': '.-', 'B': '-...', 'C': '-.-.',\n",
+    "        'D': '-..', 'E': '.', 'F': '..-.',\n",
+    "        'G': '--.', 'H': '....', 'I': '..',\n",
+    "        'J': '.---', 'K': '-.-', 'L': '.-..',\n",
+    "        'M': '--', 'N': '-.', 'O': '---',\n",
+    "        'P': '.--.', 'Q': '--.-', 'R': '.-.',\n",
+    "        'S': '...', 'T': '-', 'U': '..-',\n",
+    "        'V': '...-', 'W': '.--', 'X': '-..-',\n",
+    "        'Y': '-.--', 'Z': '--..',\n",
+    "        '0': '-----', '1': '.----', '2': '..---',\n",
+    "        '3': '...--', '4': '....-', '5': '.....',\n",
+    "        '6': '-....', '7': '--...', '8': '---..',\n",
+    "        '9': '----.'}\n",
+    "\n",
+    "text = input().split()\n",
+    "\n",
+    "for txt in text:\n",
+    "    print(' '.join(morze[el.upper()] if el != ' ' else '\\n' for el in txt)) "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "73f9e597",
+   "metadata": {},
+   "source": [
+    "## K"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "92f6c7bd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "text = [input() for item in range(int(input()))]\n",
+    "elements = set(text)\n",
+    "counter = 0\n",
+    "for item in elements:\n",
+    "    if text.count(item) != 1:\n",
+    "        counter += text.count(item)\n",
+    "print(counter)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fdc93c6d",
+   "metadata": {},
+   "source": [
+    "# 3.3\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9dfa70e8",
+   "metadata": {},
+   "source": [
+    "## A"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ad1ea3d2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "[i ** 2 for i in range(a, b + 1)]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "73edd366",
+   "metadata": {},
+   "source": [
+    "## B"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "77c3c6fe",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "[[i * j for j in range(1, n + 1)] for i in range(1, n + 1)]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9c3ae5b5",
+   "metadata": {},
+   "source": [
+    "## C"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9fbceb2b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "[len(i) for i in sentence.split()]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2fef787c",
+   "metadata": {},
+   "source": [
+    "## D"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f9d5858f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "{i for i in numbers if i % 2 != 0}"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e956de1a",
+   "metadata": {},
+   "source": [
+    "## E"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "326e40d7",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1, 4]\n"
+     ]
+    }
+   ],
+   "source": [
+    "numbers = [1, 2, 3, 4, 5]\n",
+    "print([number for number in numbers if (number**(0.5))%1 == 0])\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b6b054ee",
+   "metadata": {},
+   "source": [
+    "## F"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bcb6d94d",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a333fcff",
+   "metadata": {},
+   "source": [
+    "## G"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c553ec89",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "80a2d53d",
+   "metadata": {},
+   "source": [
+    "## H"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f1e65a2b",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4e7b015d",
+   "metadata": {},
+   "source": [
+    "## I"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a17e239d",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1670abfb",
+   "metadata": {},
+   "source": [
+    "## J"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a8835230",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.9"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
