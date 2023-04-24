@@ -2,6 +2,7 @@ from parse_txt import parse
 from heapq import *
 
 
+# Реализация алгоритма Дейкстры (на куче)
 def dijkstra(start_node, finish_node, graph_node):
     queue = []
     heappush(queue, (0, start_node))
@@ -22,7 +23,8 @@ def dijkstra(start_node, finish_node, graph_node):
                 heappush(queue, (new_cost, neigh_node))
                 cost_visited[neigh_node] = new_cost
                 visited[neigh_node] = node
-    return visited
+
+    return visited, cost_visited
 
 
 if __name__ == '__main__':
@@ -32,13 +34,14 @@ if __name__ == '__main__':
     graph = parse('test')[2]
 
     path = f'{finish}'
-    visited_node = dijkstra(start, finish, graph)
+    visited_nodes, cost_visited_nodes = dijkstra(start, finish, graph)
     cur_node = finish
 
-    print(f'    Кратчайший путь от {start} до {finish}:')
+    print(f'\nКратчайший маршрут от {start} до {finish}:')
 
     while cur_node != start:
-        cur_node = visited_node[cur_node]
+        cur_node = visited_nodes[cur_node]
         path += f' >--- {cur_node} '
     path = path[::-1]
     print(path)
+    print(f'Длина кратчайшего маршрута от {start} до {finish}: {cost_visited_nodes[finish]}')
