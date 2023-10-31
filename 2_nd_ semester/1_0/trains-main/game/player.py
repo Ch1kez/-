@@ -1,5 +1,6 @@
 import pymunk
 from game.train import Train
+# from trains.arsen_train import Train
 from math import sqrt, radians
 from game.locator import Locator
 from collections import namedtuple

@@ -1,28 +1,25 @@
 import math
+import copy
 import random
-from game.locator import Locator
+from typing import List
 
 
-class Geometry:
-    """
-    Класс Geometry представляет собой базовый класс для геометрических объектов. В текущей версии не имеет
-    дополнительных атрибутов или методов.
-    """
-
+class Circle:
     def __init__(self):
-        """
-        Конструктор класса Geometry. Создает объект Geometry.
-        """
+        self.radius = 0
+        self.not_line = True
+        self.center_point = []
 
-    def get_line_parameters(self, point1, point2):
-        """
-        Метод, вычисляющий параметры линии и возвращающий их в виде словаря.
 
-        Возвращает:
-        - line_parameters (dict): Словарь с параметрами линии.
-        """
-        x1, y1 = point1
-        x2, y2 = point2
+class Line:
+    def __init__(self, point1, point2):
+        self.point1 = point1
+        self.point2 = point2
+        self.line_parameters = self.get_line_parameters()
+
+    def get_line_parameters(self):
+        x1, y1 = self.point1
+        x2, y2 = self.point2
         line_parameters = {}
 
         if x1 == x2:
@@ -36,312 +33,81 @@ class Geometry:
 
         return line_parameters
 
-    def check_points_on_line(self, buffer):
-        """
-        Возвращает линию, которая описывает крайние точки прямой.
-        Если ни одна точка не лежит на одной прямой, то возвращает False.
-        """
-        if len(buffer) != 4:
-            # Если в буфере нет четырёх точек, возвращаем False
-            return False
-
-        max_line = None
-
-        for i in range(4):
-            for j in range(i + 1, 4):
-                # Проверяем каждую пару точек (i, j)
-                line_params = self.get_line_parameters(buffer[i], buffer[j])
-
-                # Проверяем, лежит ли каждая точка на этой линии
-                points_on_line = [point for point in buffer if (
-                        point[0] == line_params.get('x') or
-                        point[1] == line_params.get('y') or
-                        (line_params.get('slope') and
-                         point[1] == line_params['slope']['k'] * point[0] + line_params['slope']['b']))]
-
-                if not max_line or len(points_on_line) > len(max_line[0]):
-                    # Если текущая линия содержит больше точек, чем максимальная линия
-                    max_line = (points_on_line, buffer[i], buffer[j])
-
-        if max_line:
-            # Возвращаем крайние точки линии
-            return (min(max_line[0], key=lambda x: x[0]), max(max_line[0], key=lambda x: x[0]))
-        else:
-            # Проверяем, что все точки лежат на одной прямой
-            line_params = self.get_line_parameters(buffer[0], buffer[1])
-            all_on_line = all(
-                point[0] == line_params.get('x') or
-                point[1] == line_params.get('y') or
-                (line_params.get('slope') and
-                 point[1] == line_params['slope']['k'] * point[0] + line_params['slope']['b'])
-                for point in buffer
-            )
-            if all_on_line:
-                return (buffer[0], buffer[1])
-            else:
-                return False
-
-    def are_lines_overlap(self, line1, line2, tolerance=1):
-        """
-        Проверяет перекрытие двух линий с учетом допустимого отклонения параметров.
-
-        Аргументы:
-        - line1 (list[tuple[float, float]]): Первая линия.
-        - line2 (list[tuple[float, float]]): Вторая линия.
-        - tolerance (float): Допустимое отклонение параметров линий.
-
-        Возвращает:
-        - True, если две линии перекрываются, иначе False.
-        """
-        line1_params = self.get_line_parameters(line1[0], line1[1])
-        line2_params = self.get_line_parameters(line2[0], line2[1])
-
-        # Проверяем перекрытие на основе параметров линий и допустимого отклонения
-        if 'x' in line1_params:
-            return abs(line1_params['x'] - line2_params.get('x', 0)) <= tolerance
-        elif 'y' in line1_params:
-            return abs(line1_params['y'] - line2_params.get('y', 0)) <= tolerance
-        elif 'slope' in line1_params and 'slope' in line2_params:
-            k1, b1 = line1_params['slope']['k'], line1_params['slope']['b']
-            k2, b2 = line2_params['slope']['k'], line2_params['slope']['b']
-            return abs(k1 - k2) <= tolerance and abs(b1 - b2) <= tolerance
-
-        return False
-
-    def combine_collinear_lines(self, lines, local_line, tolerance=1):
-        """
-        Объединяет коллинеарные линии в одну линию.
-
-        Аргументы:
-        - lines (list[list[tuple[float, float]]): Список линий для объединения.
-        - local_line (list[tuple[float, float]]): Линия, заданная крайними точками.
-        - tolerance (float): Допустимое отклонение параметров для считания линий коллинеарными.
-
-        Возвращает:
-        - Список объединенных коллинеарных линий.
-        """
-        # Реализация объединения коллинеарных линий с новой линией
-        for i, existing_line in enumerate(lines):
-            if self.are_lines_overlap(local_line, existing_line, tolerance):
-                # Если линии коллинеарны, объединяем их
-                x1 = min(local_line[0][0], existing_line[0][0])
-                y1 = min(local_line[0][1], existing_line[0][1])
-                x2 = max(local_line[1][0], existing_line[1][0])
-                y2 = max(local_line[1][1], existing_line[1][1])
-                lines[i] = [(x1, y1), (x2, y2)]
-                return lines  # Выход из функции после объединения
-
-        # Если линия не коллинеарна ни с одной линией, добавляем ее к списку
-        lines.append(local_line)
-        return lines
-
-
-class Line(Geometry):
-    """
-    Класс Line представляет собой геометрическую линию между двумя точками.
-
-    Атрибуты:
-    - point1 (tuple): Кортеж, представляющий первую точку линии в формате (x, y).
-    - point2 (tuple): Кортеж, представляющий вторую точку линии в формате (x, y).
-    - line_parameters (dict): Словарь, содержащий параметры линии (например, x, y, slope).
-
-    Методы:
-    - get_line_parameters(): Вычисляет параметры линии и возвращает их в виде словаря.
-
-    """
-
-    def __init__(self, point1, point2):
-        """
-        Конструктор класса Line. Создает объект Line между двумя точками.
-
-        Аргументы:
-        - point1 (tuple): Первая точка линии в формате (x, y).
-        - point2 (tuple): Вторая точка линии в формате (x, y).
-        """
-        super().__init__()
-        self.point1 = point1
-        self.point2 = point2
-        # self.line_parameters = self.get_line_parameters()
-
-
-class Circle(Geometry):
-    """
-    Класс Circle представляет собой геометрический объект - окружность. В текущей версии не имеет дополнительных
-    атрибутов или методов.
-    """
-
-    def __init__(self):
-        """
-        Конструктор класса Circle. Создает объект Circle.
-        """
-        super().__init__()
-
 
 class Train:
-    """
-    Класс Train представляет собой модель поезда, управляемого автоматически или вручную.
 
-    Атрибуты:
-    - x (float): Координата x текущего положения поезда.
-    - y (float): Координата y текущего положения поезда.
-    - alpha (float): Угол поворота поезда относительно оси x.
-    - v_max (float): Максимальная скорость поезда.
-    - locator (Locator): Объект Locator, предоставляющий данные о расположении поезда.
-
-    Методы:
-    - update(x, y): Обновляет координаты поезда и получает точки на объекте.
-    - info(): Возвращает информацию о измеренных объектах и точках.
-    - processing(): Выбор режима движения (автоматический или ручной).
-    - manual_update(x, y, alpha): Обновление координат поезда в ручном режиме.
-    - processing_auto(): Автоматическое движение поезда на основе данных локатора.
-    """
-
-    def __init__(self, x0: float, y0: float, alpha0: float, v_max: float, locator: Locator):
-        """
-        Конструктор класса Train. Создает объект поезда с заданными параметрами.
-
-        Аргументы:
-        - x0 (float): Начальная координата x.
-        - y0 (float): Начальная координата y.
-        - alpha0 (float): Начальный угол поворота поезда.
-        - v_max (float): Максимальная скорость поезда.
-        - locator (Locator): Объект Locator для получения данных о расположении поезда.
-        """
-
-        self.alpha = alpha0  # строительная ось от оси x против часовой стрелки
+    def __init__(self, alpha0, x0, y0, v_max, locator):
+        self.alpha = alpha0
         self.x = x0
         self.y = y0
-
         self.v_max = v_max
         self.locator = locator
-        self.geometry = Geometry()
-
-        self.v = 10
-        self.turn = 1
-        self.points = []
-        self.oneturncount = 0
+        self.v = 5
+        self.shape = None
+        self.distance = None
+        self.maps = []
+        self.auto = True
+        self.rotation = True
+        self.points_buffer = []
+        self.points_counter = 0
         self.alpha_buffer = 0
         self.move_counter = 0
-
-        self.auto = True
-        self.shape = None
-        self.rotation = True
-        self.distance = None
-
-        self.point_buffer_list = []
+        self.points = []
         self.lines = []
+        self.circles = []
+        self.red = [(255, 0, 0)]
+        self.green = [(0, 255, 0)]
 
-    def get_line(self):
-        if self.lines:
-            self.point_buffer_list.sort()
-            local_line = self.geometry.check_points_on_line(buffer=self.point_buffer_list)
-            if local_line:
-                self.lines = self.geometry.combine_collinear_lines(local_line=local_line, lines=self.lines)
-        else:
-            self.point_buffer_list.sort()
-            local_line = self.geometry.check_points_on_line(buffer=self.point_buffer_list)
-            self.lines.append(local_line)
+    @staticmethod
+    def dist_btwn_pnts(point1, point2):
+        return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
 
-    def determine_figure(self):
-        self.get_line()
-
-    def update(self, x: float, y: float):
-        """
-        Метод обновления координат поезда и получения точек на объекте.
-
-        Аргументы:
-        - x (float): Новая координата x.
-        - y (float): Новая координата y.
-        """
-
-        # TODO в будющих версиях боты сами будут счислять свое положение
+    def update(self, x, y):
         if self.auto:
             self.x = x
             self.y = y
 
-        # дергаем измерение локатора
-        measurement = self.locator.measurement
+        updated_data = self.locator.measurement
+        # print(updated_data)
 
-        if measurement['query']:  # запрос
-            x_q, y_q, alpha_q = measurement['query'][0]
-            self.distance = measurement['distance']
+        if updated_data['query']:
+            _x, _y, _alpha = updated_data['query'][0]
+            self.distance = updated_data['distance']
 
             if self.distance:
-                new_point = (
-                    x_q + self.distance * math.cos(alpha_q),
-                    y_q + self.distance * math.sin(alpha_q)
+                new_touch_point = (
+                    _x + self.distance * math.cos(_alpha),
+                    _y + self.distance * math.sin(_alpha)
                 )
-                self.points.append(new_point)
-                self.point_buffer_list.append(new_point)
-                if len(self.point_buffer_list) == 4:
-                    self.determine_figure()
-                    self.point_buffer_list.pop(0)
+                self.points.append(new_touch_point)
+
+                self.points_buffer.append(new_touch_point)
+
+                if len(self.points_buffer) == 4:
+                    self.get_figures()
+                    self.points_buffer.pop(0)
             else:
-                if self.point_buffer_list:
-                    self.point_buffer_list.clear()
+                if self.points_buffer:
+                    self.points_buffer = []
         else:
             self.distance = None
 
-    def info(self) -> dict:
-        """
-        Метод, возвращающий информацию о измеренных объектах и точках.
-
-        Возвращает:
-        - info (dict): Словарь с информацией о поезде и измеренных объектах.
-        """
-
-        # TODO!
-        color1 = (255, 0, 0)
-        color2 = (0, 120, 0)
-        color3 = (255, 0, 150)
-        line1 = [(100, 200,), (100, 300), color1]
-        line2 = [(150, 250), (150, 350), color2]
-        line3 = [(0, 0), (500, 500), color3]
-        circle1 = ((100, 200), 20, color3)  # (point, radius)
-        circle2 = ((200, 400), 30, color3)  # (point, radius)
-        circle3 = ((400, 600), 40, color2)  # (point, radius)
-
+    def info(self):
+        # print(len(self.lines))
+        if self.lines:
+            self.lines = self.combine_collinear_lines(self.lines)
         figures = {
-            "lines": self.lines,  # не замкнутая
-            "circles": [circle1, circle2, circle3],
+            "lines": self.lines,
+            "circles": [],
             "points": []
         }
-
+        print(figures['lines'])
         return {
-            "params": (self.x, self.y, self.v, self.alpha),
-            "maps": figures
+            'params': (self.x, self.y, self.v, self.alpha),
+            'maps': figures
         }
 
     def processing(self):
-        """
-        Метод для выбора режима движения (автоматического или ручного) поезда.
-        """
-
-        if self.auto:
-            self.processing_auto()
-
-    def manual_update(self, x: float, y: float, alpha: float):
-        """
-        Метод для обновления координат поезда в ручном режиме.
-
-        Аргументы:
-        - x (float): Приращение координаты x.
-        - y (float): Приращение координаты y.
-        - alpha (float): Приращение угла поворота.
-        """
-
-        if not self.auto:
-            self.x += x
-            self.y += y
-            self.alpha += alpha
-
-        self.locator.make_query(self.x, self.y, self.alpha)
-
-    def processing_auto(self):
-        """
-        Метод для автоматического движения поезда на основе данных локатора.
-        """
-
         if self.auto:
             if self.move_counter % 300 == 0:
                 self.rotation = True
@@ -372,3 +138,179 @@ class Train:
             self.move_counter += 1
 
         self.locator.make_query(self.x, self.y, self.alpha)
+
+    def manual_update(self, x: float, y: float, alpha: float):
+        if not self.auto:
+            self.x += x
+            self.y += y
+            self.alpha += alpha
+
+        self.locator.make_query(self.x, self.y, self.alpha)
+
+    def get_line(self) -> bool:
+        local_points = copy.copy(self.points_buffer)
+        is_line = False
+        eps = 0.0009
+
+        for i in range(2):
+            if local_points[i] == local_points[i + 1]:
+                return is_line
+
+            if len(local_points) > 1 and self.dist_btwn_pnts(local_points[i], local_points[i + 1]) > 50:
+                return is_line
+
+            if len(local_points) > 2 and self.dist_btwn_pnts(local_points[i + 1], local_points[i + 1]) > 50:
+                return is_line
+
+            general_line = Line(point1=local_points[i], point2=local_points[i + 2])
+            other_line = Line(point1=local_points[i], point2=local_points[i + 1])
+            buff_line = []
+
+            if 'slope' in general_line.line_parameters.keys() and 'slope' in other_line.line_parameters.keys():
+                equ1 = general_line.line_parameters['slope']
+                equ2 = other_line.line_parameters['slope']
+                tg_fi = (equ2['k'] - equ1['k']) / (1 + equ2['k'] * equ1['k'])
+
+                if math.fabs(math.atan(tg_fi)) < 0.01:
+                    if self.lines and len(self.lines[-1]) > 1 and self.lines[-1][-2] == local_points[i] and \
+                            self.lines[-1][-1] == local_points[i + 1]:
+                        self.lines[-1].append(local_points[i + 2])
+                    else:
+                        buff_line.append(local_points[i])
+                        buff_line.append(local_points[i + 1])
+                        buff_line.append(local_points[i + 2])
+                        self.lines.append(buff_line)
+
+                    is_line = True
+
+            elif 'x' in general_line.line_parameters.keys() and 'x' in other_line.line_parameters.keys():
+                if - eps < general_line.line_parameters['x'] - other_line.line_parameters['x'] < eps:
+                    if self.lines and len(self.lines[-1]) > 1 and self.lines[-1][-2] == local_points[i] and \
+                            self.lines[-1][-1] == local_points[i + 1]:
+                        self.lines[-1].append(local_points[i + 2])
+                    else:
+                        buff_line.append(local_points[i])
+                        buff_line.append(local_points[i + 1])
+                        buff_line.append(local_points[i + 2])
+                        self.lines.append(buff_line)
+
+                    is_line = True
+
+            elif 'y' in general_line.line_parameters.keys() and 'y' in other_line.line_parameters.keys():
+                if - eps < general_line.line_parameters['y'] - other_line.line_parameters['y'] < eps:
+                    if self.lines and len(self.lines[-1]) > 1 and self.lines[-1][-2] == local_points[i] and \
+                            self.lines[-1][-1] == local_points[i + 1]:
+                        self.lines[-1].append(local_points[i + 2])
+                    else:
+                        buff_line.append(local_points[i])
+                        buff_line.append(local_points[i + 1])
+                        buff_line.append(local_points[i + 2])
+                        self.lines.append(buff_line)
+
+                    is_line = True
+
+        return is_line
+
+    def get_straight_angle(self) -> bool:
+        if len(self.points_buffer) < 3:
+            return False
+
+        p1, p2, p3 = self.points_buffer[-3], self.points_buffer[-2], self.points_buffer[-1]
+
+        angle = self.calculate_angle(p1, p2, p3)
+
+        if 85 < angle < 95:
+            self.lines.append([p1, p2, p3])
+            return True
+
+        return False
+
+    @staticmethod
+    def calculate_angle(p1: tuple[float, float], p2: tuple[float, float], p3: tuple[float, float]) -> float:
+        vector1 = (p1[0] - p2[0], p1[1] - p2[1])
+        vector2 = (p3[0] - p2[0], p3[1] - p2[1])
+
+        dot_product = vector1[0] * vector2[0] + vector1[1] * vector2[1]
+        magnitude1 = math.sqrt(vector1[0] ** 2 + vector1[1] ** 2)
+        magnitude2 = math.sqrt(vector2[0] ** 2 + vector2[1] ** 2)
+
+        if magnitude1 == 0 or magnitude2 == 0:
+            return 0.0  # Вернуть 0, если один из векторов имеет нулевую длину.
+
+        angle = math.degrees(math.acos(max(min(dot_product / (magnitude1 * magnitude2), 1), -1)))
+        return angle
+
+    def calculate_mean_parameters(self, line):
+        # Проверяем, что у нас есть хотя бы две точки
+        if len(line) < 2:
+            return None  # Возвращаем None, если только одна точка
+
+        # Инициализируем суммы координат
+        sum_x = 0
+        sum_y = 0
+
+        for x, y in line:
+            sum_x += x
+            sum_y += y
+
+        # Рассчитываем средние значения x и y
+        x_mean = sum_x / len(line)
+        y_mean = sum_y / len(line)
+
+        return x_mean, y_mean
+
+    def are_lines_collinear(self, line1, line2, epsilon=0.1):
+        # Проверка, лежат ли линии на одной прямой.
+        k1, b1 = self.calculate_mean_parameters(line1)
+        k2, b2 = self.calculate_mean_parameters(line2)
+        return abs(k1 - k2) < epsilon and abs(b1 - b2) < epsilon
+
+    def combine_collinear_lines(self, lines):
+        combined_lines = [lines[0]]
+
+        for line in lines[1:]:
+            if self.are_lines_collinear(combined_lines[-1], line):
+                combined_lines[-1].extend(line)
+            else:
+                combined_lines.append(line)
+
+        return combined_lines
+
+    def get_figures(self):
+        if len(self.points_buffer) < 3:
+            return
+
+        type_figure = None  # Инициализируем type_figure значением по умолчанию None
+        color = None
+        name = None
+
+        if len(self.points_buffer) == 3:
+            if self.get_straight_angle():
+                self.points_counter = 0
+                return
+
+        is_line = self.get_line()
+
+        if is_line:
+            type_figure = 'lines'
+            color = self.red
+            name = f'Line{len(self.lines)}'
+            if self.points_buffer:
+                self.points_buffer.pop()
+        elif self.get_straight_angle():
+            type_figure = 'lines'
+            color = self.green
+            name = f'StraightAngle{len(self.lines)}'
+            self.lines.pop()
+
+        if type_figure:
+            self.maps.append({
+                'type': type_figure,
+                'color': color,
+                'name': name
+            })
+
+        if len(self.points_buffer) == 1:
+            self.points_buffer.pop()
+
+        self.points_counter = 0

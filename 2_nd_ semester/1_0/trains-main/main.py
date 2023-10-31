@@ -13,7 +13,8 @@ width = 1280
 height = 720
 
 player_angle = radians(45)
-player_position = width // 2, height // 2
+player_position = width // 2, 360
+print(player_position)
 
 window = pyglet.window.Window(width, height)
 pyglet.gl.glClearColor(1, 1, 1, 1)
@@ -75,8 +76,8 @@ def on_draw():
 
 @window.event
 def on_key_press(symbol, modifiers):
-    step = 10
-    angle_step = 5
+    step = 5
+    angle_step = 3
 
     if not player.train.auto:
         if symbol == key.LEFT:
@@ -134,10 +135,10 @@ def update(dt):
             sprites.append(shapes.Circle(touch_point[0], touch_point[1], 3, color=item.train.color, batch=batch))
 
         for line in data["lines"]:
-            sprites.append(shapes.Line(*line[0], *line[1], 3, color=(255, 0, 0), batch=batch))
+            sprites.append(shapes.Line(*line[0], *line[1], 3, color=(250, 0, 0), batch=batch))
 
         for circle in data["circles"]:
-            sprites.append(shapes.Arc(circle[0][0], circle[0][1], circle[1], color=circle[2], batch=batch))
+            sprites.append(shapes.Arc(circle[0][0], circle[0][1], circle[1], color=(250, 0, 0), batch=batch))
 
     space.step(dt)
 
